@@ -1,0 +1,13 @@
+@if(message()) {
+<div class="messages-container">
+  <div class="message" [class]="message()?.severity">
+    {{ message()?.text }}
+    <img
+      (click)="onClose()"
+      src="assets/icons/close.svg"
+      class="close"
+      alt="close"
+    />
+  </div>
+</div>
+}
