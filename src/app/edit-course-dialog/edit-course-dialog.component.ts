@@ -13,6 +13,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CourseCategoryComboboxComponent } from '../course-category-combobox/course-category-combobox.component';
 import { CourseCategory } from '../models/course-category.model';
 import { firstValueFrom } from 'rxjs';
+import { CourseCategoryEnum } from '../enums/category.emun';
 
 @Component({
   selector: 'edit-course-dialog',
@@ -20,6 +21,7 @@ import { firstValueFrom } from 'rxjs';
   imports: [
     LoadingIndicatorComponent,
     ReactiveFormsModule,
+    CourseCategoryComboboxComponent,
     CourseCategoryComboboxComponent,
   ],
   templateUrl: './edit-course-dialog.component.html',
@@ -38,19 +40,22 @@ export class EditCourseDialogComponent {
     iconUrl: [''],
   });
 
-  constructor() {
-    console.log(this.data);
+  category = signal<CourseCategory>(CourseCategoryEnum.BEGINNER);
 
+  constructor() {
     this.form.patchValue({
       title: this.data.course?.title,
       longDescription: this.data.course?.longDescription,
-      category: this.data.course?.category,
       iconUrl: this.data.course?.iconUrl,
     });
+    this.category.set(
+      this.data.course?.category ?? CourseCategoryEnum.BEGINNER
+    );
   }
 
   async onSave() {
     const courseProps = this.form.value as Partial<Course>;
+    courseProps.category = this.category();
     if (this.data.mode === 'update') {
       this.saveCourse(this.data?.course!.id, courseProps);
       return;

@@ -68,8 +68,10 @@ export class HomeComponent {
       mode: 'create',
       title: 'Create New Course',
     });
+    if (!newCourse) {
+      return;
+    }
     this.#courses.set([newCourse, ...this.#courses()]);
-    console.log('newCourse', newCourse);
   }
 
   onCourseUpdated(updatedCourse: Course) {

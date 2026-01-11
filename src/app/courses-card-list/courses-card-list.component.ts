@@ -30,7 +30,10 @@ export class CoursesCardListComponent {
       course,
     });
 
-    console.log('newCourse', newCourse);
+    if (!newCourse) {
+      return;
+    }
+
     this.courseUpdated.emit(newCourse);
   }
 

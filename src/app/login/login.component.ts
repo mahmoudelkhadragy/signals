@@ -21,7 +21,7 @@ export class LoginComponent {
     password: [''],
   });
 
-  onLogin() {
+  async onLogin() {
     try {
       const { email, password } = this.form.value;
       if (!email || !password) {
@@ -31,7 +31,7 @@ export class LoginComponent {
         );
         return;
       }
-      this.authService.login(email, password);
+      await this.authService.login(email, password);
       this.router.navigate(['/home']);
     } catch (error) {
       console.log(error);
