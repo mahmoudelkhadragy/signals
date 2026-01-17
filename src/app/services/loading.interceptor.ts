@@ -12,8 +12,6 @@ export const loadingInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
   next: HttpHandlerFn
 ) => {
-  console.log('Interceptor ...');
-
   const loadingService = inject(LoadingService);
 
   if (req.context.get(skipLoading)) {

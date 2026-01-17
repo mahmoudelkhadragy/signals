@@ -1,4 +1,4 @@
-import {Component, effect, linkedSignal, signal} from "@angular/core";
+import { Component, computed, effect, linkedSignal, signal } from "@angular/core";
 
 @Component({
   selector: 'linked-signal-demo',
@@ -27,9 +27,20 @@ export class LinkedSignalDemoComponent {
 
   selectedCourse = signal<string | null>("BEGINNERS");
 
-  quantity = signal(1);
+  quantity = linkedSignal({
+    source: () => ({ courseCode: this.selectedCourse }),
+    computation: (source, previous) => {
+      console.log('linkedSignal source: ', source.courseCode());
+      console.log('linkedSignal previous: ', previous);
+      return this.courses.find(c => c.code === source.courseCode())?.defaultQuantity ?? 1;
+    }
+  });
 
   constructor() {
+
+    effect(() => {
+      console.log('quantity: ', this.quantity());
+    });
 
   }
 

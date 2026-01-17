@@ -12,7 +12,7 @@ import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { CoursesCardListComponent } from '../courses-card-list/courses-card-list.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MessagesService } from '../messages/messages.service';
-import { catchError, from, throwError } from 'rxjs';
+import { catchError, from, interval, startWith, throwError } from 'rxjs';
 import {
   toObservable,
   toSignal,
@@ -50,8 +50,46 @@ export class HomeComponent {
 
   dialog = inject(MatDialog);
 
+  // courses$ = toObservable(this.#courses);
+
   constructor() {
+    // this.courses$.subscribe((courses) => {
+    //   console.log('courses$', courses);
+    // });
+
     this.loadCourses();
+  }
+
+  injector = inject(Injector);
+  courses$ = from(this.#coursesService.loadAllCourses());
+
+  onToSignal() {
+    const number$ = interval(1000).pipe(
+      startWith(0)
+    );
+    const number = toSignal(number$,
+      {
+        injector: this.injector,
+        // initialValue: 0,
+        requireSync: true
+      });
+
+    effect(() => {
+      console.log('numbers: ', number());
+    }, {
+      injector: this.injector
+    });
+  }
+
+  onToObservable() {
+    const numbers = signal(0);
+    numbers.set(1);
+    const numbers$ = toObservable(numbers, { injector: this.injector });
+    numbers.set(2);
+    numbers.set(3);
+    numbers$.subscribe((num) => console.log('num', num));
+    numbers.set(4);
+
   }
 
   async loadCourses() {
@@ -92,4 +130,7 @@ export class HomeComponent {
       console.error(error);
     }
   }
+
+
+
 }
